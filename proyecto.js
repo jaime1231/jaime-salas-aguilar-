@@ -1,60 +1,71 @@
-app.use((express).json());
-let estudiantes=[ //se crea la lista en formato de arreglo
-    {id:1,nombre:'juan perez'},
-    {id:2,nombre:'monica gomez'},
-    {id:3,nombre:'jose ruiz'},
-]
-//get: obtener todos los estudiantes 
-app.get('/api/greet',(requires) => {
-    res.json(estudiantes)
+const express = require('express');
+const app = express();
 
-})
+app.use(express.json());
 
-//get obtener un estudiante 
+let libros = [ // Lista actualizada de libros
+    {id: 1, titulo: 'El señor de los anillos', autor: 'J.R.R. Tolkien'},
+    {id: 2, titulo: 'Harry Potter y la piedra filosofal', autor: 'J.K. Rowling'},
+    {id: 3, titulo: 'El código Da Vinci', autor: 'Dan Brown'},
+    {id: 4, titulo: 'Crimen y castigo', autor: 'Fiódor Dostoyevski'},
+    {id: 5, titulo: 'Orgullo y prejuicio', autor: 'Jane Austen'},
+];
 
-app.get('/estudiantes/:id',(req,res)=>{
-    const id=parseint(req.params.id);
-    const estudiante = estudiantes.find(e=>e.id===id);
-    if(estudiante){
-        res.json(estudiante);
-    }else{
-        res.status(404).send('estudiante no encontrado')
+// GET: Obtener todos los libros
+app.get('/api/libros', (req, res) => {
+    res.json(libros);
+});
+
+// GET: Obtener un libro por ID
+app.get('/libros/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const libro = libros.find(l => l.id === id);
+    if (libro) {
+        res.json(libro);
+    } else {
+        res.status(404).send('Libro no encontrado');
     }
-} )
+});
 
-
-//POST Crear un nuevo estudiante
-app.post('/estudiantes', (req,res)=>{ // Estamos definiendo una ruta para crear un estudiante en el arreglo estudiantes.
-    const nuevoEstudiante={ // Creamos una variable
-        id:estudiantes.length+1,
-        nombre:req.body.nombre // En el body voy a observar como se hace la actualizacion en el postman.
+// POST: Crear un nuevo libro
+app.post('/libros', (req, res) => {
+    const nuevoLibro = {
+        id: libros.length + 1,
+        titulo: req.body.titulo, // Se obtiene el título desde el cuerpo de la solicitud
+        autor: req.body.autor    // Se obtiene el autor desde el cuerpo de la solicitud
     };
-    estudiantes.push(nuevoEstudiante); // Estamos agregando un nuevo estudiante en mi arreglo estudiantes. Push (Agregar)
-    res.status(201).json(nuevoEstudiante); // 
-})
+    libros.push(nuevoLibro);
+    res.status(201).json(nuevoLibro);
+});
 
-
-//metodo put
-app.put('/estudiantes/:id',(req, res)=>{//define la ruta put que permite actualizar un estudiante con su req y res
-    const id=parseInt(req, params.id);//define la variable id para hacer la busqueda y localizar lo que se busca
-    const estudiante=estudiantes.find(e=>e.id==id)//busca si el id esta en la lista de estudiantes
-    if(estudiante){
-        estudiante.name=req.body.nombre;//ve si se enconttro un estudiante 
-        res.json(estudiante);
-    }else{
-        res.status(404).send('estudiante no encontrado')//si no encuentra estudiante mandara esta linea 
+// PUT: Actualizar un libro
+app.put('/libros/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const libro = libros.find(l => l.id === id);
+    if (libro) {
+        libro.titulo = req.body.titulo; // Actualiza el título
+        libro.autor = req.body.autor;   // Actualiza el autor
+        res.json(libro);
+    } else {
+        res.status(404).send('Libro no encontrado');
     }
-} )
+});
 
-//delete: eliminar un item por id
-
-app.delete('/estudiante/:id',(req,res)=>{//define una ruta que permite borrar un estudiante por su id 
-    const id=parseint(req.params.id);//define la variable id para eliminar al estudiante 
-    const index=estudiantes.findindex(e=>e.id===id);//busca si el id esta en la lista de estudiantes 
-    if(index!==-1){
-        estudiantes.splice(index,1)//elimina al estudiante 
-        res.send('estudiante eliminado');//notifica que el estudiante se elimino
-    }else{
-        res.status(404).send('estudiante no encontrado')//si no encuentra estudiante mandara esta linea 
+// DELETE: Eliminar un libro por ID
+app.delete('/libros/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const index = libros.findIndex(l => l.id === id);
+    if (index !== -1) {
+        libros.splice(index, 1); // Elimina el libro
+        res.send('Libro eliminado');
+    } else {
+        res.status(404).send('Libro no encontrado');
     }
-})
+});
+
+// Configuración del puerto
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en el puerto ${PORT}`);
+});
+
